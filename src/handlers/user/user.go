@@ -84,3 +84,14 @@ func GetUser(c *gin.Context) {
 		"user":    &user,
 	})
 }
+
+// Get User Endpoint
+func CreateUser(c *gin.Context) {
+	db := *MysqlConfig()
+	fmt.Println("MYSQL RUNNING: ", db)
+	defer db.Close()
+
+	c.JSON(200, gin.H{
+		"message": "Success Create Users",
+	})
+}

@@ -14,6 +14,7 @@ func (c Routes) StartGin() {
 	{
 		api.GET("/users", handle_user.GetAllUser)
 		api.GET("/users/:id", handle_user.GetUser)
+		api.POST("/users", handle_user.CreateUser)
 	}
 	r.Run(":8000")
 }

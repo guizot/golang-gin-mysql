@@ -112,11 +112,11 @@ func CreateUser(c *gin.Context) {
 	user.CreatedAt = time.Now().Format(DateFormat)
 	user.UpdatedAt = time.Now().Format(DateFormat)
 
-	sql := fmt.Sprintf("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)")
+	sql := "INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)"
 	insert, err := db.Query(sql, user.Id, user.Name, user.Address, user.Age, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
 		c.JSON(200, gin.H{
-			"message": "Error Insert User",
+			"message": "Error Create User",
 		})
 		return
 	}
@@ -125,6 +125,59 @@ func CreateUser(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"message": "Success Create Users",
-		"user":    &user,
+	})
+}
+
+// Update User Endpoint
+func UpdateUser(c *gin.Context) {
+	db := *MysqlConfig()
+	defer db.Close()
+
+	id := c.Param("id")
+	user := model_user.User{}
+	err := c.Bind(&user)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"message": "Error Get Body",
+		})
+		return
+	}
+	user.UpdatedAt = time.Now().Format(DateFormat)
+
+	sql := "UPDATE users SET name = ?, address = ?, age = ?, updated_at = ? where id = ?"
+	update, err := db.Query(sql, user.Name, user.Address, user.Age, user.UpdatedAt, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"message": "Error Update User",
+		})
+		return
+	}
+
+	defer update.Close()
+
+	c.JSON(200, gin.H{
+		"message": "Success Update Users",
+	})
+}
+
+// Delete User Endpoint
+func DeleteUser(c *gin.Context) {
+	db := *MysqlConfig()
+	defer db.Close()
+
+	id := c.Param("id")
+	sql := "DELETE FROM users where id = ?"
+	delete, err := db.Query(sql, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"message": "Error Update User",
+		})
+		return
+	}
+
+	defer delete.Close()
+
+	c.JSON(200, gin.H{
+		"message": "Success Delete Users",
 	})
 }
